@@ -11,5 +11,17 @@ module.exports = function(api) {
         },
       ]
     ],
+    env: {
+      production: {
+        plugins: [["inline-dotenv",{
+          path: '.env'
+        }]]
+      },
+      development: {
+        plugins: [["inline-dotenv",{
+          path: '.env'
+        }]]
+      }
+    }
   };
 };

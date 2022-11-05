@@ -6,53 +6,57 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { GOOGLE_MAPS_APIKEY } from "@env";
 import { useDispatch } from 'react-redux';
 import { setDestination, setOrigin } from '../slices/navSlice';
+import NavFavourites from '../components/NavFavourites';
 const HomeScreen = () => {
     const dispatch = useDispatch();
   return (
     <SafeAreaView style={tw.style('bg-white', 'h-full')}>
-        <View style={tw.style('p-5')}>
-            <Image
-            style={{
-                width:100,
-                height:100,
-                resizeMode: 'contain',
-            }}
-            source={{
-                uri:"https://links.papareact.com/gzs", 
-            }}
+        <View>
+            <View style={tw.style('p-5')}>
+                <Image
+                style={{
+                    width:100,
+                    height:100,
+                    resizeMode: 'contain',
+                }}
+                source={{
+                    uri:"https://links.papareact.com/gzs", 
+                }}
+                />
+            </View>
+            
+            <GooglePlacesAutocomplete 
+                placeholder='Where From?'
+                renderDescription={row => row.description}
+                enablePoweredByContainer= {false}
+                fetchDetails = {true}
+                minLength={2}
+                styles={{
+                    container: {
+                        flex: 0,
+                    },
+                    textInput:{
+                        fontSize:18,
+                    },
+                }}
+                onPress= {(data, datails = null) => {
+                    dispatch(setOrigin({
+                        location: datails.geometry.location,
+                        description: data.description
+                    }))
+                    dispatch(setDestination(  null  ))
+                }}
+                returnKeyType={'search'}
+                query={{
+                    key: GOOGLE_MAPS_APIKEY,
+                    language: 'en',
+                }}
+                nearbyPlacesAPI='GooglePlacesSearch'
+                debounce={400}
             />
+            <NavOptions/>
+            <NavFavourites/>
         </View>
-        <GooglePlacesAutocomplete 
-            placeholder='Where From?'
-            renderDescription={row => row.description}
-            enablePoweredByContainer= {false}
-            styles={{
-                container: {
-                    flex: 0,
-                },
-                textInput:{
-                    fontSize:18,
-                },
-            }}
-            onPress= {(data, datails = null) => {
-                dispatch(setOrigin({
-                    location: datails.geometry.location,
-                    description: data.description
-                }))
-                dispatch(setDestination(  null  ))
-            }}
-            returnKeyType={'search'}
-            fetchDetails = {true}
-            query={{
-                key: "AIzaSyCOt1CSPKyPZjMrriQr8FNdOcYLHNChsd4",
-                language: 'en',
-                type: '(cities)'
-            }}
-            nearbyPlacesAPI='GooglePlacesSearch'
-            debounce={400}
-        />
-        <NavOptions/>
-        
     </SafeAreaView>
   )
 }
